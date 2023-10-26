@@ -1,6 +1,6 @@
 # TABS APP
 
-[DEMO](https://andriimelnyq.github.io/tabs-app/)
+[DEMO](https://tabs-app-two.vercel.app/)
 
 This is a simple client-side app that works like a primitive CMS (content management system).
 
