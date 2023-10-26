@@ -8,13 +8,21 @@ import { Header } from './components/Header';
 
 export const App: React.FC = () => {
   const [data, setData] = useState<TabType[] | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     fetch('/tabs.json')
-      .then((response) => response.json())
+      .then((response) => {
+        setIsLoading(true);
+
+        return response.json();
+      })
       .then((jsonData) => {
         setData(jsonData);
-      });
+      })
+      .catch(() => setError('Unable to load data!'))
+      .finally(() => setIsLoading(false));
   }, []);
 
   return (
@@ -22,15 +30,16 @@ export const App: React.FC = () => {
       <div>
         <Header data={data} />
 
-        {data ? (
+        {isLoading && <div className="app">Loading...</div>}
+        {error && <div className="app">{error}</div>}
+
+        {!isLoading && !error && data && (
           <Suspense fallback={<div className="app">Loading...</div>}>
             <Routes>
               <Route path="/" element={<TabLoader data={data} />} />
               <Route path="/:tabId" element={<TabLoader data={data} />} />
             </Routes>
           </Suspense>
-        ) : (
-          <div className="app">Loading data...</div>
         )}
       </div>
     </HashRouter>
